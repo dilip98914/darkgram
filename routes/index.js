@@ -95,6 +95,19 @@ router.get("/notifications", asyncMiddleware(isLoggedIn), async function (req, r
     return res.render("notifications", { footer: false, currUser });
 });
 
+router.get("/like/:postid", async  function (req, res) {
+    const post= await postSchema.findOne({_id:req.params.postid})
+    const user = await userSchema.findOne({ username: req.session.passport.user })
+    if(post.like.indexOf(user._id)==-1){
+        post.like.push(user._id)
+    }else{
+        post.like.splice(post.like.indexOf(user._id),1)
+    }
+    await post.save();
+    return res.json(post);
+});
+
+
 //POST
 
 router.post("/login", passport.authenticate('local',{

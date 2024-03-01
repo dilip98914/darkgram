@@ -23,12 +23,39 @@ document.querySelector('.parent')
     })
 
 //comment toggle div
-document.querySelector('#chatbox').addEventListener('click', (docs)=>{
-    console.log('aaaaaaaaaaa',docs)
-    const commentDiv=document.querySelector('#comment-div')
-    if(commentDiv.classList.contains('hidden')){
-        commentDiv.classList.remove('hidden')
-    }else{
-        commentDiv.classList.add('hidden')
+document.querySelector('.parent').addEventListener('click',(docs)=>{
+    if (docs.target.classList.contains('ri-chat-3-line')){
+        const commentDiv = docs.target.parentNode.parentNode.nextElementSibling.nextElementSibling.nextElementSibling;
+        if (commentDiv.classList.contains('hidden')) {
+            commentDiv.classList.remove('hidden')
+        } else {
+            commentDiv.classList.add('hidden')
+        }
+    }
+})
+
+document.querySelector('.parent').addEventListener('click',(dd)=>{
+    if (dd.target.classList.contains('comment-submit')){
+        const buttonDiv=dd.target;
+        const inputDiv = buttonDiv.previousElementSibling.children[0];
+        console.log('bbbbbbbb',buttonDiv, inputDiv)
+        // inputDiv.addEventListener('change', (docs) => {
+            console.log('33333333333')
+            // buttonDiv.addEventListener('click', (btn => {
+                console.log('ahihihihihih',inputDiv.dataset)
+                fetch(`/comment/${inputDiv.dataset.postid}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ data: inputDiv.value.trim() })
+                })
+                    .then(raw => raw.json())
+                    .then(response => {
+                        inputDiv.value = "";
+                        buttonDiv.parentNode.previousElementSibling.textContent = response.comments.length + 'comments'
+                    }).catch(err => console.log('xxxxxxxxxxxxxxxxxxx', err))
+            // }))
+        // })
     }
 })

@@ -11,7 +11,17 @@ const postSchema = mongoose.Schema({
     }],
     comments: {
         type: Array,
-        default: []
+        default: [{
+            value:String,
+            user:{
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "user"
+            },
+            date:{
+                type: Date,
+                default: new Date()
+            } 
+        }]
     },
     date: {
         type: Date,

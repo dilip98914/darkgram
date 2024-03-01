@@ -51,6 +51,9 @@ function formatRelativeTime(date) {
 // GET
 
 router.get("/", function (req, res) {
+    if(req.isAuthenticated()){
+        return res.redirect('/feed')
+    }
     return res.render("index", { footer: false });
 });
 
@@ -95,6 +98,13 @@ router.get("/notifications", asyncMiddleware(isLoggedIn), async function (req, r
     return res.render("notifications", { footer: false, currUser });
 });
 
+
+router.get("/comments/:postid", asyncMiddleware(isLoggedIn), async function (req, res) {
+    const post = await postSchema.findOne({ _id: req.params.postid }).populate('user')
+    const user = await userSchema.findOne({ username: req.session.passport.user })
+    return res.render("comments", { footer: false, post, user, formatRelativeTime });
+});
+
 router.get("/like/:postid", async  function (req, res) {
     const post= await postSchema.findOne({_id:req.params.postid})
     const user = await userSchema.findOne({ username: req.session.passport.user })
@@ -107,6 +117,13 @@ router.get("/like/:postid", async  function (req, res) {
     return res.json(post);
 });
 
+router.post("/comment/:postid", async function (req, res) {
+    const post = await postSchema.findOne({ _id: req.params.postid })
+    const user = await userSchema.findOne({ username: req.session.passport.user })
+    post.comments.push({value:req.body.data,user:user._id,date:new Date()})
+    await post.save();
+    return res.json(post);
+});
 
 //POST
 

@@ -1,35 +1,25 @@
 <%- include("./partials/header") %>
     <div class="w-full min-h-screen bg-zinc-900 text-white py-5">
         <!-- header -->
-        <div class="w-full px-4 flex items-center justify-between">
-            <img src="/images/logo.png" class="w-1/4">
-            <div class="icons -mt-2 flex gap-5 items-center">
-                <a class="text-sm" href="/notifications">
-                    <i class="text-[1.4rem] ri-heart-3-line"></i>
-                </a>
-                <a class="text-sm" href="/messages">
-                    <i class="text-[1.4rem] ri-messenger-line"></i>
-                </a>
-            </div>
+         <div class="flex justify-between items-center pl-4">
+            <a class="text-sm text-blue-500" href="/profile/<%=user.username%>">
+                <i class="text-[1.4rem] ri-arrow-left-s-line"></i>
+                <i class="text-[1.4rem] ri-user-fill"></i>
+            </a>
+            <h2 class="leading-none text-sm">Comments
+                <i class="px-1 text-[1.4rem] ri-chat-2-line"></i>
+            </h2>
+            <h2></h2>
+
         </div>
 
         <!-- post -->
         <div class="post mt-10 w-full min-h-[50vh]">
-            <div class="title px-4 flex items-center gap-2">
-                <div class="w-[9vw] h-[9vw] bg-sky-100 rounded-full overflow-hidden">
-                    <img class="w-full h-full object-cover" src="<%=post.user.picture%>">
-                </div>
-                <h4 class="text-sm">
-                    <a href="/profile/<%=post.user.username%>">
-                        @<%=post.user.username%>
-                    </a>
-                </h4>
-                <h6 class="text-xs opacity-30">
-                    <%=formatRelativeTime(post.date)%>
-                        </h4>
-            </div>
-            <div class="relative w-full h-96 mt-4 bg-sky-100 overflow-hidden">
-                <img data-postid="<%=post.id%>" class="posting w-full h-full object-cover" src="<%=post.picture%>">
+            <div class="relative 
+                rounded-md w-full h-96 mt-4 bg-sky-100 overflow-hidden">
+                <img data-postid="<%=post.id%>" class="posting w-full h-full 
+                object-cover
+                " src="<%=post.picture%>">
             </div>
         
             <h2 class="text-white font-light text-sm mt-2">
@@ -39,14 +29,25 @@
                 <%=post.caption%>
             </h2>
         </div>
-        <div class="w-full my-5 px-5 min-h-[50vh]">
+        <div class="w-full  px-5 min-h-[50vh]">
         <% post.comments.reverse().forEach(comment=>{ %>
             <div class="flex justify-between w-1/4">
-                <h3 class="text-blue-300">@<%=post.user.username%></h3>
+                <div class="flex">
+                    <div class="w-[9vw] h-[9vw] 
+                        bg-sky-100 rounded-full overflow-hidden">
+                        <img class="w-full h-full object-cover" src="<%=post.user.picture%>">
+                    </div>
+                    <div class="flex flex-col">
+                        <h3 class="ml-3 text-blue-300">@<%=post.user.username%>
+                        </h3>
+                        <h3 class="px-4 py-1">
+                            <%=comment.value%>
+                        </h3>
+                    </div>
+                </div>
                 <h4 class="text-gray-500"><%=formatRelativeTime(comment.date)%></h4>
             </div>
             
-            <h3 class="px-4 py-2"><%=comment.value%></h3>
         <%})%>
         </div>
 

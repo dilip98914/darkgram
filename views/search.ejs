@@ -18,7 +18,22 @@
             .then(raw=>raw.json())
             .then(result=>{
                 let clutter="";
-                console.log('aaaaaaaa',result)
+                result.forEach(item=>{
+                    clutter+=`
+                        <a href="/profile/${item.username}" class="outline-none">
+                            <div class="text-white flex items-center gap-2 mt-5">
+                                <div class="image w-[11vw] h-[11vw] rounded-full bg-sky-100 overflow-hidden">
+                                    <img src="${item.picture}">
+                                </div>
+                                <div class="text">
+                                    <h3>${item.username}</h3>
+                                    <h4 class="text-xs opacity-30 leading-none">${item.name}</h4>
+                                </div>
+                            </div>
+                        </a>
+                    `
+                    document.querySelector('.users').innerHTML=clutter;
+                })
             })
     })
 

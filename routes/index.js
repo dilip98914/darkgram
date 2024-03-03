@@ -58,6 +58,9 @@ router.get("/", function (req, res) {
 });
 
 router.get("/login", function (req, res) {
+    if (req.isAuthenticated()) {
+        return res.redirect('/feed')
+    }
     return res.render("login", { footer: false });
 });
 
@@ -72,7 +75,7 @@ router.get("/profile/:username", asyncMiddleware(isLoggedIn),async function (req
     const user=await userSchema.findOne({username:req.params.username})
     .populate('posts')
     .populate('saved')
-    return res.render("profile", { footer: true, user});
+    return res.render("profile", { footer: true, user,me:user.username==req.session.passport.user});
 });
 
 router.get("/upload",asyncMiddleware(isLoggedIn), function (req, res) {
@@ -86,6 +89,13 @@ router.get("/edit",asyncMiddleware(isLoggedIn), async function (req, res) {
 
 router.get("/search", asyncMiddleware(isLoggedIn), async function (req, res) {
     return res.render("search", { footer: true });
+});
+
+router.get("/search/:user", asyncMiddleware(isLoggedIn), async function (req, res) {
+    const searchTerm=`^${req.params.user}`;
+    const regex=new RegExp(searchTerm);
+    const users=await userSchema.find({username:{$regex:regex}})
+    return res.json(users);
 });
 
 router.get("/messages", asyncMiddleware(isLoggedIn), async function (req, res) {
@@ -123,6 +133,24 @@ router.post("/comment/:postid", async function (req, res) {
     post.comments.push({value:req.body.data,user:user._id,date:new Date()})
     await post.save();
     return res.json(post);
+});
+
+router.get("/logout",  function (req, res) {
+    req.logout((err)=>{
+        return res.redirect('/login')
+    })
+});
+
+router.get("/bookmark/:postid",async function (req, res) {
+    const post = await postSchema.findOne({ _id: req.params.postid })
+    const user = await userSchema.findOne({ username: req.session.passport.user })
+    if(user.saved.indexOf(post._id)==-1){
+        user.saved.push(post._id)
+    }else{
+        user.saved.splice(user.saved.indexOf(post._id),1)
+    }
+    await user.save()
+    return res.redirect('/feed');
 });
 
 //POST

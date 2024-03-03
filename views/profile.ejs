@@ -6,7 +6,7 @@
             <a href="/upload">
                 <i class="text-[1.4rem] ri-add-box-line"></i>
             </a>
-            <i class="text-[1.4rem] ri-menu-line"></i>
+            <!-- <i class="text-[1.4rem] ri-menu-line"></i> -->
         </div>
     </div>
 
@@ -43,18 +43,26 @@
             </h3>
         </div>
         <div class="px-6 mt-5">
-            <a href="/edit" 
-            class="px-3 py-2 bg-zinc-900 text-xs rounded-md">
-                Edit Profile
-            </a>
+            <%if(me==true){%>
+                <a href="/edit" class="py-2 bg-zinc-900  rounded-md underline">
+                    Edit Profile
+                </a>
+                <a class="mx-2  text-blue-300" href="/logout">
+                    logout <i class="text-[1.4rem] ri-logout-box-r-fill"></i>
+                </a>
+            <%}else{%>
+                <a class="mx-2 bg-blue-500 rounded-md p-2" href="#">
+                    Follow 
+                </a>
+            <%}%>
         </div>
         <div class="posts w-full flex gap-1 py-2 mt-5 flex-wrap">
             <% if(user.posts.length>0){ %>
-                <% user.posts.forEach(post=>{ %>
-                    <div class="post w-[32.5%] h-32 bg-sky-100">
-                        <img 
-                        src="<%=post.picture%>" 
-                        class="w-full h-full object-cover">
+                <% user.posts.reverse().forEach(post=>{ %>
+                    <div class="post w-[32.5%] h-32  border-2  border-rose-500">
+                        <a href="/comments/<%=post.id%>">
+                            <img src="<%=post.picture%>" class="w-full h-full object-cover">
+                        </a>
                     </div>
                 <%}) %>
             <%}else{%>

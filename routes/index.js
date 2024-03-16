@@ -68,7 +68,7 @@ router.get("/feed", asyncMiddleware(isLoggedIn),async function (req, res) {
     let user=await userSchema.findOne({username:req.session.passport.user})
                             .populate('posts')
     const posts=await postSchema.find({}).populate('user')
-    return res.render("feed", { footer: true,user,posts,formatRelativeTime });
+    return res.render("feed", { footer: true,user,posts,formatRelativeTime,req });
 });
 
 router.get("/profile/:username", asyncMiddleware(isLoggedIn),async function (req, res) {
